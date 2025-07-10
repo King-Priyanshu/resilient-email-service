@@ -1,10 +1,10 @@
 {
   "name": "resilient-email-sending-service",
   "version": "1.0.0",
-  "scripts": {
-    "start": "ts-node src/index.ts",
-    "test": "jest"
-  },
+ "scripts": {
+  "build": "tsc",
+  "start": "node dist/index.js"
+},
   "devDependencies": {
     "@types/express": "^5.0.3",
     "@types/jest": "^29.5.14",
