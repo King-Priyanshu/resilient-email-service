@@ -1,0 +1,9 @@
+POST http://localhost:3000/send
+Content-Type: application/json
+
+{
+  "to": "test@example.com",
+  "subject": "Test",
+  "body": "Hello from REST client!",
+  "idempotencyKey": "xyz-001"
+}
