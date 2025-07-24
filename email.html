@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Email Sender - Resilient API</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 40px auto;
+      max-width: 600px;
+      padding: 20px;
+      background: #f4f4f4;
+      color: #333;
+    }
+
+    h1 {
+      text-align: center;
+      color: #2c3e50;
+    }
+
+    label {
+      display: block;
+      margin: 10px 0 5px;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      padding: 10px 20px;
+      background: #3498db;
+      border: none;
+      color: white;
+      font-size: 16px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #2980b9;
+    }
+
+    .response {
+      margin-top: 20px;
+      background: #e0ffe0;
+      padding: 15px;
+      border-radius: 5px;
+      white-space: pre-wrap;
+      display: none;
+    }
+
+    .error {
+      background: #ffe0e0;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>📧 Send Email</h1>
+
+  <form id="emailForm">
+    <label for="to">To:</label>
+    <input type="email" id="to" required />
+
+    <label for="subject">Subject:</label>
+    <input type="text" id="subject" required />
+
+    <label for="body">Body:</label>
+    <textarea id="body" rows="5" required></textarea>
+
+    <label for="key">Idempotency Key:</label>
+    <input type="text" id="key" required />
+
+    <button type="submit">Send Email</button>
+  </form>
+
+  <div id="responseBox" class="response"></div>
+
+  <script>
+    document.getElementById('emailForm').addEventListener('submit', async function (e) {
+      e.preventDefault();
+
+      const to = document.getElementById('to').value;
+      const subject = document.getElementById('subject').value;
+      const body = document.getElementById('body').value;
+      const idempotencyKey = document.getElementById('key').value;
+
+      const responseBox = document.getElementById('responseBox');
+      responseBox.style.display = 'none';
+      responseBox.classList.remove('error');
+
+      try {
+        const res = await fetch('https://email-api-nzlr.onrender.com/send', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ to, subject, body, idempotencyKey })
+        });
+
+        const data = await res.json();
+        responseBox.innerText = JSON.stringify(data, null, 2);
+        responseBox.style.display = 'block';
+
+        if (!res.ok) {
+          responseBox.classList.add('error');
+        }
+      } catch (err) {
+        responseBox.innerText = 'Error: ' + err.message;
+        responseBox.classList.add('error');
+        responseBox.style.display = 'block';
+      }
+    });
+  </script>
+
+</body>
+</html>
